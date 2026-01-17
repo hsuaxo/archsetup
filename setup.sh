@@ -23,8 +23,8 @@ WIFI_PASSWORD="IAmSecured"
 
 # External USB drive - VERIFY WITH 'lsblk -o NAME,SIZE,MODEL,TRAN' FIRST!
 DISK="/dev/sda"
-EFI_SIZE="1024"    # MB
-SWAP_SIZE="8"      # GB
+EFI_SIZE="1024"     # MB
+SWAP_SIZE="8"       # GB
 SYSTEM_SIZE="50"   # GB (for OS and programs)
 
 # Partition helper
@@ -62,17 +62,17 @@ wipefs -af "$DISK"
 sgdisk --zap-all "$DISK"
 partprobe "$DISK"; sleep 2
 
-# Partitions
+# Partitions (aligned to 1MiB for optimal performance)
 EFI_END=$EFI_SIZE
 SWAP_END=$((EFI_END + SWAP_SIZE * 1024))
 SYSTEM_END=$((SWAP_END + SYSTEM_SIZE * 1024))
 
-parted -s $DISK mklabel gpt
-parted -s $DISK mkpart "EFI" fat32 1MiB "${EFI_END}MiB"
-parted -s $DISK set 1 esp on
-parted -s $DISK mkpart "swap" linux-swap "${EFI_END}MiB" "${SWAP_END}MiB"
-parted -s $DISK mkpart "system" ext4 "${SWAP_END}MiB" "${SYSTEM_END}MiB"
-parted -s $DISK mkpart "data" ext4 "${SYSTEM_END}MiB" 100%
+parted -s -a optimal $DISK mklabel gpt
+parted -s -a optimal $DISK mkpart "EFI" fat32 1MiB "${EFI_END}MiB"
+parted -s -a optimal $DISK set 1 esp on
+parted -s -a optimal $DISK mkpart "swap" linux-swap "${EFI_END}MiB" "${SWAP_END}MiB"
+parted -s -a optimal $DISK mkpart "system" ext4 "${SWAP_END}MiB" "${SYSTEM_END}MiB"
+parted -s -a optimal $DISK mkpart "data" ext4 "${SYSTEM_END}MiB" 100%
 partprobe $DISK; sleep 2
 
 mkfs.fat -F32 "$(get_part 1)"
