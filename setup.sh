@@ -91,6 +91,7 @@ swapon "$(get_part 2)"
 # INSTALL BASE
 #-------------------------------------------------------------------------------
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+pacman -Sy --noconfirm
 
 pacstrap -K /mnt \
     base base-devel linux linux-headers linux-firmware \
