@@ -10,7 +10,7 @@ trap 'echo "Error on line $LINENO"; exit 1' ERR
 #-------------------------------------------------------------------------------
 # CONFIGURATION
 #-------------------------------------------------------------------------------
-HOSTNAME="harchlaptop"
+HOSTNAME="harchdesktop"
 USERNAME="hsuazo"
 USER_PASSWORD="froboski"
 ROOT_PASSWORD="froboski"
@@ -21,11 +21,11 @@ KEYMAP="us"
 WIFI_SSID="TP-LINK-HY"
 WIFI_PASSWORD="IAmSecured"
 
-# External USB drive - VERIFY WITH 'lsblk -o NAME,SIZE,MODEL,TRAN' FIRST!
-DISK="/dev/sda"
+# Internal NVMe SSD - Samsung 990 EVO
+DISK="/dev/nvme0n1"
 EFI_SIZE="1024"     # MB
 SWAP_SIZE="8"       # GB
-SYSTEM_SIZE="50"   # GB (for OS and programs)
+SYSTEM_SIZE="500"   # GB (for OS and programs)
 
 # Partition helper
 get_part() {
@@ -160,15 +160,8 @@ EOF
 
 systemctl enable nvidia-suspend nvidia-hibernate nvidia-resume
 
-# Bootloader (skip GRUB menu)
+# Bootloader
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-
-# Verify GRUB entry was created, if not use --removable fallback
-if ! efibootmgr | grep -q "GRUB"; then
-    echo "NVRAM entry failed, using removable fallback..."
-    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable
-fi
-
 sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 nvidia_drm.modeset=1"/' /etc/default/grub
 sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=0/' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -334,10 +327,10 @@ echo "    Installation Complete!"
 echo "=============================================="
 echo ""
 echo "Partition Layout:"
-echo "  $(get_part 1) - EFI     (1GB)"
-echo "  $(get_part 2) - Swap    (8GB)"
-echo "  $(get_part 3) - System  (600GB)"
-echo "  $(get_part 4) - Data    (rest)"
+echo "  /dev/nvme0n1p1 - EFI     (1GB)"
+echo "  /dev/nvme0n1p2 - Swap    (8GB)"
+echo "  /dev/nvme0n1p3 - System  (500GB)"
+echo "  /dev/nvme0n1p4 - Data    (rest ~490GB)"
 echo ""
 echo "Shortcuts:"
 echo "  /code      → ~/code"
