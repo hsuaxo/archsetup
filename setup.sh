@@ -96,11 +96,11 @@ pacman -Sy --noconfirm archlinux-keyring
 
 pacstrap -K /mnt \
     base base-devel linux linux-headers linux-firmware \
-    intel-ucode nvidia nvidia-utils nvidia-settings lib32-nvidia-utils \
+    intel-ucode nvidia-dkms nvidia-utils nvidia-settings lib32-nvidia-utils \
     networkmanager grub efibootmgr \
     git vim nano sudo man-db man-pages \
     pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-    ntfs-3g exfatprogs wget curl rsync htop btop neofetch unzip p7zip \
+    ntfs-3g exfatprogs wget curl rsync htop btop fastfetch unzip p7zip \
     gnome gnome-tweaks gdm gnome-shell-extensions \
     docker docker-compose docker-buildx \
     python python-pip python-pipx \
