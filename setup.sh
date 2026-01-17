@@ -25,7 +25,7 @@ WIFI_PASSWORD="IAmSecured"
 DISK="/dev/sda"
 EFI_SIZE="1024"     # MB
 SWAP_SIZE="8"       # GB
-SYSTEM_SIZE="600"   # GB (for OS and programs)
+SYSTEM_SIZE="50"   # GB (for OS and programs)
 
 # Partition helper
 get_part() {
